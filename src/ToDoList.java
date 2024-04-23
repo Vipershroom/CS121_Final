@@ -38,7 +38,8 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
                 list.removeAll();
 
                 for (String i : ToDoList) {
-                    JLabel label = new JLabel("• " + i);
+                    JCheckBox label = new JCheckBox("• " + i);
+                    label.setAlignmentX(Component.CENTER_ALIGNMENT);
                     label.setAlignmentX(Component.CENTER_ALIGNMENT);
                     list.add(label);
 
