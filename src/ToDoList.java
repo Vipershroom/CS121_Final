@@ -7,12 +7,13 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
     JLabel title2 = new JLabel("To Do List");
     JTextField input = new JTextField(32);
     JButton enter = new JButton("Enter");
+    JButton clear = new JButton("Clear");
+    JButton clearAll = new JButton("Clear All");
     ArrayList<String> ToDoList = new ArrayList<String>();
     public ToDoList() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-
 
         title.setFont(new Font("Arial",Font.ITALIC, 18));
         title.setHorizontalAlignment(SwingConstants.CENTER);
@@ -39,6 +40,19 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
 
                 for (String i : ToDoList) {
                     JCheckBox label = new JCheckBox("• " + i);
+                    // grays out text if it is checked
+                    label.addItemListener(new ItemListener() {
+                        @Override
+                        public void itemStateChanged(ItemEvent e) {
+                            int select = e.getStateChange();
+                            if (select == ItemEvent.SELECTED){
+                                label.setForeground(Color.GRAY);
+                            }
+                            if (select == ItemEvent.DESELECTED){
+                                label.setForeground(Color.BLACK);
+                            }
+                        }
+                    });
                     label.setAlignmentX(Component.CENTER_ALIGNMENT);
                     label.setAlignmentX(Component.CENTER_ALIGNMENT);
                     list.add(label);
@@ -48,7 +62,41 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
                 setVisible(true);
             }
         });
+        clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int count = -1;
+                for (Component i : list.getComponents()) {
+                    if (i instanceof JCheckBox){
+                        count++;
+                        if (((JCheckBox) i).isSelected()){
+                            i.setVisible(false);
+                            list.remove(i);
+                            ToDoList.remove(count);
+                            count--;
+                            System.out.println("removed");
+                        }
+                    }
+                }
+                list.setAlignmentX(RIGHT_ALIGNMENT);
+            }
+        });
+        clearAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Component i : list.getComponents()) {
+                    if (i instanceof JCheckBox){
+                        i.setVisible(false);
+                        ToDoList.removeFirst();
+                        list.remove(i);
+                    }
+                }
+                list.setAlignmentX(RIGHT_ALIGNMENT);
+            }
+        });
         inputPanel.add(enter);
+        inputPanel.add(clear);
+        inputPanel.add(clearAll);
         centerPanel.add(inputPanel, BorderLayout.NORTH);
         centerPanel.add(list, BorderLayout.CENTER);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
@@ -63,7 +111,7 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-
+        System.out.println("aaaa");
     }
 
     @Override
@@ -72,7 +120,7 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
     }
 
     public static void main(String[] args) {
-        final int FRAME_WIDTH = 500;
+        final int FRAME_WIDTH = 640;
         final int FRAME_HEIGHT = 600;
         ToDoList i = new ToDoList();
         i.setSize(FRAME_WIDTH,FRAME_HEIGHT);
