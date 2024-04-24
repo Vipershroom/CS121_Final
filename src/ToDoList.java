@@ -127,7 +127,6 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
             }
         });
         buttons.add(save);
-        buttons.add(new JButton("Load"));
         mainPanel.add(buttons);
 
     }
