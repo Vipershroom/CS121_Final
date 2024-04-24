@@ -1,10 +1,14 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.io.File;
+import java.util.*;
 public class ToDoList extends JFrame implements ActionListener, TextListener, ItemListener {
-    JLabel title = new JLabel("To Do List");
     JLabel title2 = new JLabel("To Do List");
     JTextField input = new JTextField(32);
     JButton enter = new JButton("Enter");
@@ -47,6 +51,85 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
         mainPanel.add(add2);
         mainPanel.add(new_panel2);
         add(mainPanel);
+
+        JPanel buttons = new JPanel();
+        JButton save = new JButton("Save");
+
+        HashMap<String, ArrayList<String>> listContents = new HashMap<String, ArrayList<String>>();
+
+
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainPanel.setVisible(true);
+                ArrayList<String> items = new ArrayList<String>();
+                for (Component i: mainPanel.getComponents()) {
+                    if (i instanceof JPanel && ((JPanel) i).getLayout() instanceof BorderLayout) {
+                        for (Component k: ((JPanel) i).getComponents()) {
+
+                            String title = "";
+                            if (k instanceof JTextField) {
+                                title = ((JTextField) k).getText();
+                            }
+                            if (k instanceof JPanel) {
+                                for (Component m: ((JPanel) k).getComponents()) {
+                                    if (m instanceof JPanel) {
+                                        for (Component j: ((JPanel) m).getComponents()) {
+                                            if (j instanceof JCheckBox) {
+                                                System.out.println(((JCheckBox) j).getText());
+                                                items.add(((JCheckBox) j).getText());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            System.out.println(items);
+
+                            if (title.equals("")) {
+                                title = Math.floor((Math.random() * (999999 - 100000))) + "";
+                            }
+                            listContents.remove(title);
+                            listContents.put(title, items);
+                            System.out.println(listContents);
+                        }
+                    }
+                }
+                HashMap<String, ArrayList<String>> temp = new HashMap<>();
+                for (String i : listContents.keySet()) {
+                    try {
+                        Double.parseDouble(i);
+                    } catch (NumberFormatException f) {
+                        temp.put(i,listContents.get(i));
+                    }
+                }
+                System.out.println(temp);
+                JFileChooser fileChooser = new JFileChooser();
+                if (fileChooser.showSaveDialog(mainPanel) == JFileChooser.APPROVE_OPTION) {
+                    File fi = fileChooser.getSelectedFile();
+                    try {
+                        FileWriter fw = new FileWriter(fi.getPath());
+                        StringBuilder content = new StringBuilder();
+                        for (String k : temp.keySet()) {
+                            content.append(k);
+                            content.append("[");
+                            for (String i : temp.get(k)) {
+                                content.append(i + " , ");
+                            }
+                            content.append("]");
+                            content.append("\n");
+                        }
+                        fw.write(String.valueOf(content));
+                        fw.flush();
+                    } catch (Exception e2) {
+                        JOptionPane.showMessageDialog(null, e2.getMessage());
+                    }
+                }
+            }
+        });
+        buttons.add(save);
+        buttons.add(new JButton("Load"));
+        mainPanel.add(buttons);
+
     }
     public JPanel genTodo(JTextField title, JTextField input, JButton enter, JButton clear, JButton clearAll) {
         final ArrayList<String>[] ToDoList = new ArrayList[]{new ArrayList<String>()};
