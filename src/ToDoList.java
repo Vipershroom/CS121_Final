@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -9,9 +10,46 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
     JButton enter = new JButton("Enter");
     JButton clear = new JButton("Clear");
     JButton clearAll = new JButton("Clear All");
+    JButton add1 = new JButton("+");
+    JButton add2 = new JButton("+");
     ArrayList<String> ToDoList = new ArrayList<String>();
+    ArrayList<String> ToDoList2 = new ArrayList<String>();
+    ArrayList<String> ToDoList3 = new ArrayList<String>();
     public ToDoList() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 65, 10));
+        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        JTextField textbox = new JTextField(32);
+        mainPanel.add(genTodo(textbox, input, enter, clear, clearAll));
+        JPanel new_panel = genTodo(new JTextField(32),new JTextField(32),new JButton("Enter"),new JButton("Clear"),new JButton("Clear All"));
+        JPanel new_panel2 = genTodo(new JTextField(32),new JTextField(32),new JButton("Enter"),new JButton("Clear"),new JButton("Clear All"));
+        new_panel.setVisible(false);
+        new_panel2.setVisible(false);
+
+        add1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                add1.setVisible(false);
+                new_panel.setVisible(true);
+            }
+        });
+
+        add2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                add2.setVisible(false);
+                new_panel2.setVisible(true);
+            }
+        });
+        mainPanel.add(add1);
+        mainPanel.add(new_panel);
+        mainPanel.add(add2);
+        mainPanel.add(new_panel2);
+        add(mainPanel);
+    }
+    public JPanel genTodo(JTextField title, JTextField input, JButton enter, JButton clear, JButton clearAll) {
+        final ArrayList<String>[] ToDoList = new ArrayList[]{new ArrayList<String>()};
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -34,12 +72,12 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
                 String text = input.getText();
                 // Check for empty or whitespace characters
                 if (!text.matches("^$") && !text.matches("^\s+$")) {
-                    ToDoList.add(text);
+                    ToDoList[0].add(text);
                 }
                 input.setText("");
                 list.removeAll();
 
-                for (String i : ToDoList) {
+                for (String i : ToDoList[0]) {
                     JCheckBox label = new JCheckBox("• " + i);
                     // grays out text if it is checked
                     label.addItemListener(new ItemListener() {
@@ -73,7 +111,7 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
                         if (((JCheckBox) i).isSelected()){
                             i.setVisible(false);
                             list.remove(i);
-                            ToDoList.remove(count);
+                            ToDoList[0].remove(count);
                             count--;
                             System.out.println("removed");
                         }
@@ -85,7 +123,7 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
         clearAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ToDoList = new ArrayList<String>();
+                ToDoList[0] = new ArrayList<String>();
                 list.removeAll();
                 list.setVisible(false);
                 list.setVisible(true);
@@ -98,8 +136,7 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
         centerPanel.add(inputPanel, BorderLayout.NORTH);
         centerPanel.add(list, BorderLayout.CENTER);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
-        add(mainPanel);
-
+        return (mainPanel);
     }
 
     @Override
