@@ -30,6 +30,7 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
         enter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 String text = input.getText();
                 // Check for empty or whitespace characters
                 if (!text.matches("^$") && !text.matches("^\s+$")) {
@@ -84,13 +85,10 @@ public class ToDoList extends JFrame implements ActionListener, TextListener, It
         clearAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (Component i : list.getComponents()) {
-                    if (i instanceof JCheckBox){
-                        i.setVisible(false);
-                        ToDoList.removeFirst();
-                        list.remove(i);
-                    }
-                }
+                ToDoList = new ArrayList<String>();
+                list.removeAll();
+                list.setVisible(false);
+                list.setVisible(true);
                 list.setAlignmentX(RIGHT_ALIGNMENT);
             }
         });
